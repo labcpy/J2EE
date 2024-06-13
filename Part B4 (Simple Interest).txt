@@ -1,0 +1,88 @@
+// ISimpleInterest.java (java interface)
+
+package simpleinterest;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+
+public interface ISimpleInterest extends Remote{
+    double ComputeInterest (double p, double t, double r) throws RemoteException;
+    
+}
+
+
+//SIClient.java (java class)
+
+package simpleinterest;
+
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Scanner;
+
+public class SIClient {
+    public static void main(String[] args) throws RemoteException, NotBoundException {
+        Registry reg = LocateRegistry.getRegistry(18888);
+        ISimpleInterest si = (ISimpleInterest) reg.lookup("SimpleInterest");
+        Scanner sc = new Scanner(System.in);
+        double p,t,r;
+        String ans="n";
+        do{
+            System.out.println("Simple Interest Calculation");
+             System.out.print("Enter the principle amount:");
+             p = sc.nextDouble();
+             System.out.print("Enter the time: ");
+             t= sc.nextDouble();
+             System.out.print("Enter the rate of interest:");
+             r=sc.nextDouble();
+             System.out.print("Simple interest is:"+si.ComputeInterest(p, t, r));
+             System.out.print("\nDo you want to continue [y/n]: ");
+             sc.nextLine();
+             ans =sc.nextLine();
+        }while(ans.toLowerCase().charAt(0)=='y');
+        
+    }
+}
+
+
+//SIServer.java (java class)
+
+package simpleinterest;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class SIServer extends UnicastRemoteObject implements ISimpleInterest{
+    public SIServer() throws RemoteException{
+        super();
+    }
+
+    @Override
+    public double ComputeInterest(double p, double t, double r) throws RemoteException {
+        return (p*t*r)/100;
+    }
+    
+    
+}
+
+
+//StartServer.java
+
+package simpleinterest;
+
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class StartServer {
+    public static void main(String[] args) throws RemoteException, AlreadyBoundException {
+        SIServer si = new SIServer();
+        Registry reg = LocateRegistry.createRegistry(18888);
+        reg.bind("SimpleInterest", si);
+        System.out.println("Server is started!!!");
+    }
+    
+}

@@ -1,0 +1,140 @@
+
+package bankdb;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.derby.client.am.ResultSet;
+
+
+public class BankDb {
+
+    public static void main(String[] args) {
+        try {
+            int choice, accno;
+            double balance;
+            String acc_name ,  acc_add, sql;
+            Scanner sc= new Scanner(System.in);
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/BankDb", "melwin", "melwin@123");
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            
+            do{
+                System.out.println("        Menu     ");
+                System.out.println("...................");
+                System.out.println("1.Create Account");
+                System.out.println("2.Deposit");
+                System.out.println("3.Withdraw");
+                System.out.println("4.Display");
+                System.out.println("5.Exit");
+                System.out.print("Enter your choice: ");
+                choice = sc.nextInt();
+                switch(choice){
+                    case 1:
+                        System.out.println("Enter account holder information");
+                        System.out.print("Enter the account number:");
+                        accno = sc.nextInt();
+                        sc.nextLine();
+                        System.out.print("Enter the account holders name:");
+                        acc_name = sc.nextLine();
+                        System.out.print("Enter the address:");
+                        acc_add = sc.nextLine();
+                        System.out.print("Enter the initial balance:");
+                        balance = sc.nextDouble();
+                        sql = "INSERT INTO MELWIN.BANK (ACCNO, ACCNAME, ACCADDRESS, BALANCE) VALUES ("+accno+", '"+acc_name+"', '"+acc_add+"', "+balance+")";
+                        int result = stmt.executeUpdate(sql);
+                        if(result == 1){
+                            System.out.println("Account created!");
+                        }else{
+                            System.out.println("Error");
+                        }
+                        break;
+                        
+                    case 2:
+                        System.out.print("Enter the account number:");
+                        accno = sc.nextInt();
+                        
+                        sql = "SELECT COUNT(*) FROM MELWIN.BANK WHERE ACCNO ="+accno;
+                        rs = (ResultSet) stmt.executeQuery(sql);
+                        rs.next();
+                        if(rs.getInt(1)==1){
+                            System.out.print("Enter the balance to deposit:");
+                        balance =sc.nextDouble();
+                        sql = "UPDATE MELWIN.BANK SET BALANCE=BALANCE + "+balance+"WHERE ACCNO ="+accno;
+                        if(stmt.executeUpdate(sql) == 1){
+                            System.out.println("Amount is deposited");
+                        }else{
+                            System.out.println("Error occured");
+                        }
+                        }else{
+                            System.out.println("Account not found!");
+                        }
+                        break;
+                        
+                        
+                    case 3:
+                        System.out.print("Enter the account number:");
+                        accno =sc.nextInt();
+                        sql = "SELECT COUNT(*) FROM MELWIN.BANK WHERE ACCNO ="+accno;
+                        rs = (ResultSet) stmt.executeQuery(sql);
+                        rs.next();
+                        if(rs.getInt(1)==1){
+                            System.out.print("Enter the withdrawal amount:");
+                            double withdrawamt = sc.nextDouble();
+                            sql = "select BALANCE from MELWIN.BANK WHERE ACCNO="+accno;
+                            rs= (ResultSet) stmt.executeQuery(sql);
+                            rs.next();
+                            double totalamt = rs.getDouble(1);
+                            if(totalamt - withdrawamt >= 500){
+                                sql = "UPDATE MELWIN.BANK SET BALANCE = BALANCE - "+withdrawamt+" WHERE ACCNO="+accno;
+                                int res = stmt.executeUpdate(sql);
+                                if(res == 1){
+                                    System.out.println("Amount withdrawn successfuly");
+                                }else{
+                                    System.out.println("Error");
+                                }
+                                
+                            }else{
+                                System.out.println("Amount cannont be withdrawm minimum amount should be 500");
+                            }
+                        }else{
+                            System.out.println("Account does not exists");
+                        }
+                        
+                        break;
+                        
+                    case 4:
+                        sql = "select * from MELWIN.BANK ";
+                        rs= (ResultSet) stmt.executeQuery(sql);
+                        while(rs.next()){
+                            System.out.println(".....................");
+                           System.out.println("Account number:"+rs.getInt(1)); 
+                            System.out.println("Account name:"+rs.getString(2));
+                            System.out.println("Address:"+rs.getString(3));
+                            System.out.println("Total Balance:"+rs.getDouble(4));
+                            System.out.println("....................");
+                        }
+                        
+                        break;
+                        
+                    case 5:
+                        System.out.println("Thank you!");
+                        return;
+                    default:
+                        System.out.println("Invalid choice!!");
+                }
+            }while(true);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(BankDb.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BankDb.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+}

@@ -1,0 +1,24 @@
+public class SecondMinMax {
+
+ 
+    public static void main(String[] args) {
+        Set<Integer> sortedset = new TreeSet<Integer>();
+        int n;
+        Scanner sc = new Scanner (System.in);
+        System.out.println("Enter total number of elements in the set:");
+        n= sc.nextInt();
+        if(n<2){
+            System.out.println("Please enter atleast 2 elements");
+            
+        }else{
+            System.out.println("Enter the values of "+n+" elements to the set");
+            for (int i=0;i<n; i++){
+                sortedset.add(sc.nextInt());
+            }
+            Integer[] arr = sortedset.toArray(new Integer[0]);
+            System.out.println("Second maximum element: "+ arr[arr.length-2]);
+            System.out.println("Second minimum element: "+arr[1]);
+        }
+    }
+    
+}

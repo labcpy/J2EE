@@ -1,0 +1,105 @@
+//Enum class name-> Number.java
+
+
+public enum Number {
+
+    ZERO(0),
+    ONE(1),
+    TWO(2),
+    THREE(3),
+    FOUR(4),
+    FIVE(5),
+    SIX(6),
+    SEVEN(7),
+    EIGHT(8),
+    NINE(9),
+    TEN(10),
+    ELEVEN(11),
+    TWELVE(12),
+    THIRTEEN(13),
+    FOURTEEN(14),
+    FIFTEEN(15),
+    SIXTEEN(16),
+    SEVENTEEN(17),
+    EIGHTEEN(18),
+    NINETEEN(19),
+    TWENTY(20),
+    THIRTY(30),
+    FORTY(40),
+    FIFTY(50),
+    SIXTY(60),
+    SEVENTY(70),
+    EIGHTY(80),
+    NINETY(90),
+    HUNDRED(100),
+    THOUSAND(1000);
+
+    private int number;
+
+    private Number(int num) {
+        this.number = num;
+    }
+
+    public static String getWord(int n) {
+        return Number.values()[n] + "";
+    }
+
+    public String convert(int n) {
+
+        if (n < 0) {
+            return "NEGATIVE" + convert(-n);
+        }
+
+        if (n == 0) {
+            return Number.getWord(n);
+        }
+
+        if (n > 999999) {
+            return "ERROR: Out of Range!";
+        }
+
+        String result = "";
+
+        if (n >= 20000) {
+            result += " " + Number.getWord(18 + (n / 10000)) + " THOUSAND";
+            n %= 10000;
+        }
+
+        if (n >= 1000) {
+            result += " " + Number.getWord(n / 1000) + " THOUSAND";
+            n %= 1000;
+        }
+
+        if (n >= 100) {
+            result += " " + Number.getWord(n / 100) + " HUNDRED";
+            n %= 100;
+        }
+
+        if (n >= 20) {
+            result += " " + Number.getWord(18 + (n / 10)) + " ";
+            n = n % 10;
+        }
+
+        if (n > 0) {
+            result += " " + Number.getWord(n);
+        }
+
+        return result;
+    }
+
+}
+
+//main-> Num2Wods.java
+
+public class Num2Words {
+
+    public static void main(String[] args) {
+        Number num = Number.EIGHTEEN;
+        Scanner sc = new Scanner(System.in);
+        int n;
+        System.out.print("Enter a number: ");
+        n = sc.nextInt();
+        System.out.println(num.convert(n));
+    }
+    
+}

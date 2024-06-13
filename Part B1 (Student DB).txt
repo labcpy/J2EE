@@ -1,0 +1,145 @@
+package studentinfomanagement;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.derby.client.am.ResultSet;
+
+/**
+ *
+ * @author ASUS
+ */
+public class StudentInfoManagement {
+
+    public static void main(String[] args) {
+        try {
+            Scanner sc = new Scanner(System.in);
+            int choice, regno;
+            String sname, sadd, sclass, scourse, dob, sql;
+               
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Student", "melwin", "melwin@123");
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            do {
+                System.out.println(".........MENU...........");
+                System.out.println("1.Add Student");
+                System.out.println("2.Delete Student");
+                System.out.println("3.Updare Student");
+                System.out.println("4.Search Student");
+                System.out.println("5.Exit");
+                System.out.println("........................");
+                System.out.print("Enter you choice: ");
+                choice = sc.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.println("Enter student details:");
+                        System.out.print("Reg No:");
+                        regno = sc.nextInt();
+                        sc.nextLine();
+                        System.out.print("Name:");
+                        sname = sc.nextLine();
+                        System.out.print("DOB [yyyy-mm-dd:");
+                        dob = sc.nextLine();
+
+                        System.out.print("Address:");
+                        sadd = sc.nextLine();
+                        System.out.print("Class:");
+                        sclass = sc.nextLine();
+                        System.out.print("Course:");
+                        scourse = sc.nextLine();
+                        sql = "INSERT INTO MELWIN.STDTABLE (STREGNO, STNAME, STDOB, STADDRESS, STCLASS, STCOURSE)VALUES(" + regno + ", '" + sname + "', '" + dob + "', '" + sadd + "', '" + sclass + "', '" + scourse + "')";
+                        int result = stmt.executeUpdate(sql);
+                        if (result == 1) {
+                            System.out.println("Student details are saved");
+                        } else {
+                            System.out.println("Error");
+                        }
+                        break;
+                   
+                    case 2:
+                        System.out.print("Enter reg no:");
+                        regno = sc.nextInt();
+                        sql = "select count(*) from MELWIN.STDTABLE WHERE STREGNO = "+regno; 
+                        rs =(ResultSet) stmt.executeQuery(sql);
+                        rs.next();
+                        if(rs.getInt(1)==1){
+                            sql = "DELETE FROM MELWIN.STDTABLE WHERE STREGNO ="+regno;
+                            int res = stmt.executeUpdate(sql);
+                            if (res ==1){
+                                System.out.println("Record deleted");
+                            }else{
+                                System.out.println("Error");
+                            }
+                        }else{
+                            System.out.println("Record not found");
+                        }
+                    break;
+
+                    case 3:
+                        System.out.print("Enter reg no:");
+                        regno =sc.nextInt();
+                        sc.nextLine();
+                        sql = "select count(*) from MELWIN.STDTABLE WHERE STREGNO = "+regno; 
+                        rs = (ResultSet) stmt.executeQuery(sql);
+                        rs.next();
+                        if(rs.getInt(1)==1){
+                            sql ="SELECT STADDRESS FROM MELWIN.STDTABLE WHERE STREGNO="+regno;
+                            rs=(ResultSet) stmt.executeQuery(sql);
+                            rs.next();
+                            System.out.println("Old Address:"+rs.getString(1));
+                            System.out.print("Enter new Adress: ");
+                            String add = sc.nextLine();
+                            sql = "UPDATE MELWIN.STDTABLE SET STADDRESS = '"+add+"' WHERE STREGNO ="+regno;
+                            if(stmt.executeUpdate(sql)==1){
+                                System.out.println("Address updated");
+                            }else{
+                                System.out.println("Error");
+                            }
+                        }else{
+                            System.out.println("No record found!!");
+                        }
+                    break;
+                    case 4:
+                        System.out.print("Enter reg no: ");
+                        regno = sc.nextInt();
+                        sql = "SELECT * FROM MELWIN.STDTABLE WHERE STREGNO="+regno;
+                        rs= (ResultSet) stmt.executeQuery(sql);
+                        if(rs!=null){
+                            rs.next();
+                            System.out.println("student details are:");
+                            System.out.println("..............");
+                            System.out.println("Regn no:"+rs.getInt(1));
+                            System.out.println("Name:"+rs.getString(2));
+                            System.out.println("DOB:"+rs.getString(3));
+                            System.out.println("Address:"+rs.getString(4));
+                            System.out.println("Class:"+rs.getString(5));
+                            System.out.println("Course:"+rs.getString(6));
+                        }
+                        
+                        break;
+                        
+                    case 5:
+                        stmt.close();
+                        con.close();
+                        System.out.println("Thank you");
+                        return;
+                    default:
+                        System.out.println("Wrong Choice");
+                }
+            } while (true);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(StudentInfoManagement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentInfoManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+}

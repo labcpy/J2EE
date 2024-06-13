@@ -1,0 +1,32 @@
+public class FileDownload extends HttpServlet {
+
+ 
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String fname = request.getParameter("filename");
+        response.setContentType("text/plaintext");
+        response.setHeader("Content-Disposition", "attachment;filename=\""+fname+"\"");
+        OutputStream os = response.getOutputStream();
+        FileInputStream fis = new FileInputStream("C:\\Users\\ASUS\\OneDrive\\Desktop\\downloadfile.txt");
+        int i =0;
+        while((i = fis.read()) !=-1){
+            os.write(i);
+        }
+        fis.close();
+        os.close();
+    }
+
+
+//html
+
+<html>
+    <head>
+        <title>File Downloader</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <a href = "FileDownload?filename=downloadfile.txt">Click to download</a>
+
+    </body>
+</html>

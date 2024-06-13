@@ -1,0 +1,92 @@
+//PA(3) Array list Menu
+
+public class ArrayListDemo {
+
+    public static void main(String[] args) {
+        int choice;
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Integer> alist = new ArrayList<Integer>();
+        int val, fval, pos;
+
+        do {
+            System.out.println("    Menu");
+            System.out.println("......................");
+            System.out.println("1.Add");
+            System.out.println("2.Sort");
+            System.out.println("3.Replace");
+            System.out.println("4.Remove");
+            System.out.println("5.Display");
+            System.out.println("6.Add in between");
+            System.out.println("7.Exit");
+            System.out.println("......................");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter a number: ");
+                    val = sc.nextInt();
+                    alist.add(val);
+                    System.out.println("Item added to the list");
+                    break;
+                case 2:
+                    System.out.println("Sorting......");
+                    System.out.println("Array before sorting");
+                    System.out.println(alist);
+                    Collections.sort(alist);
+                    System.out.println("Array after sorting");
+                    System.out.println(alist);
+                    System.out.println("Sorting complete");
+                    break;
+                case 3:
+                    System.out.print("Enter the value to change:");
+                    fval = sc.nextInt();
+                    if (alist.contains(fval)) {
+                        System.out.print("Enter the replacement value:  ");
+                        val = sc.nextInt();
+                        Collections.replaceAll(alist, fval, val);
+                        System.out.println("Value Replaced!");
+                    } else {
+                        System.out.println("Value does not exists!");
+                    }
+                   
+                    break;
+                case 4:
+                    System.out.print("Enter the element to be removed from the array list: ");
+                    val = sc.nextInt();
+                    if (alist.contains(val)) {
+                        alist.remove((Integer) val);
+                        System.out.println("Element removed");
+                    } else {
+                        System.out.println("There is no value to that can be removed from the list");
+
+                    }
+                    break;
+                case 5:
+                    System.out.println(alist);
+                    break;
+                case 6:
+                    System.out.print("Enter the index position: ");
+                    pos = sc.nextInt();
+                    if (pos < alist.size()) {
+                        System.out.print("Enter the value of new element: ");
+                        val = sc.nextInt();
+                        alist.add(pos, val);
+                        System.out.println("Element inserted");
+                    } else {
+                        System.out.println("Invalid Index!");
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("Thank you!");
+                    return;
+                default:
+                    System.out.println("\nWrong Choice\nTry again!\n");
+            }
+
+        } while (true);
+    }
+
+}
+
